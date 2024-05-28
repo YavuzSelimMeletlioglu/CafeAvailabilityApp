@@ -22,6 +22,7 @@ import { myCafe } from "./firebase";
 import TableScreen from "./screens/TableScreen";
 import { MenuScreen } from "./screens/MenuScreen";
 import { CommentScreen } from "./screens/CommentScreen";
+import { ReservationScreen } from "./screens/ReservationScreen";
 
 const cafeId = "LPly9akk4dOVhpTjnFJe";
 
@@ -136,7 +137,7 @@ function CommentView() {
   );
 }
 
-function ReservationScreen() {
+function ReservationView() {
   return (
     <SafeAreaView className="items-center space-y-5 bg-orange-500 h-[100%]">
       <View className="pt-5">

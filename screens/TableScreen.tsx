@@ -74,7 +74,12 @@ class TableScreen extends Component<{}, State> {
         <TouchableOpacity key={index} onPress={this.handleOpen}>
           <View style={[styles.tableItem, this.getTableItemStyle(table)]}>
             <Text style={styles.tableText}>
-              Table {table.id} {table.isOccupied ? "Occupied" : "Available"}
+              Table {table.id}{" "}
+              {table.isOccupied
+                ? "Occupied"
+                : table.isReserved
+                ? "Reserved"
+                : "Available"}
             </Text>
           </View>
         </TouchableOpacity>
