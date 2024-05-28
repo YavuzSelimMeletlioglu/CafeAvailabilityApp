@@ -1,33 +1,22 @@
-export const tableInfo = [
-    {
-        id : "0" ,
-        isOccupied : false ,
-        isReserved : true ,
-        order : [{
-            
-        }],
-        payment : 0 ,
-        
-    },
-    {
-        id : 1 ,
-        isOccupied : true ,
-        isReserved : false ,
-        order : [{
-                category : "Dishes",
-                name : "Pizza" ,
-                count : 2 
-            },
-        ],
-        payment : 200 ,
-    },
-    {
-        id : 2 ,
-        isOccupied : false ,
-        isReserved : false ,
-        order : [{
-            
-        }],
-        payment : 0 ,
-    },
-]
+export class Table {
+
+    id :string = "" ;
+
+    isOccupied = false ;
+    
+    isReserved = false ;
+    order = [{
+        mealName : "" ,
+        mealQuantity : 0 ,
+        mealPrice : 0 ,
+    }] ;
+    payment = 0 ;
+
+    constructor(id: string , isOccupied : boolean, isReserved : boolean ) {
+        this.id = id ;
+        this.isOccupied = isOccupied ;
+        this.isReserved = isReserved ;
+    }
+
+
+}
