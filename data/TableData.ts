@@ -12,11 +12,4 @@ export class Table {
     }] ;
     payment = 0 ;
 
-    constructor(id: string , isOccupied : boolean, isReserved : boolean ) {
-        this.id = id ;
-        this.isOccupied = isOccupied ;
-        this.isReserved = isReserved ;
-    }
-
-
 }

@@ -14,14 +14,14 @@ import {
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as Icon from "react-native-feather";
-import { menu } from "./data/MenuData";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StarRatingDisplay } from "react-native-star-rating-widget";
-import { feedback } from "./data/Feedbacks";
+import {} from "./data/Feedbacks";
 import { collection, doc, getDocs } from "firebase/firestore";
-import { Table } from "./data/TableData";
 import { myCafe } from "./firebase";
 import TableScreen from "./screens/TableScreen";
+import { MenuScreen } from "./screens/MenuScreen";
+import { CommentScreen } from "./screens/CommentScreen";
 
 const cafeId = "LPly9akk4dOVhpTjnFJe";
 
@@ -83,7 +83,7 @@ function CafeInfoScreen({ navigation }) {
   );
 }
 
-function MenuScreen() {
+function MenuView() {
   return (
     <SafeAreaView>
       <View className="absolute top-8 right-5 z-10">
@@ -125,120 +125,13 @@ function MenuScreen() {
   );
 }
 
-function CommentScreen() {
-  let counter = 0;
+function CommentView() {
   return (
     <SafeAreaView className="">
       <StatusBar barStyle="dark-content" />
       <View className="items-center">
         <Text className="font-extrabold text-2xl">Comments</Text>
       </View>
-      <FlatList
-        data={feedback}
-        renderItem={({ item }) => (
-          <View className="pt-5 ml-5 border-b border-solid w-[85%]">
-            <Text className="text-base text-gray-500">
-              Comment {++counter}: {item.comment}
-            </Text>
-          </View>
-        )}
-      ></FlatList>
-    </SafeAreaView>
-  );
-}
-
-function TableView() {
-  const [open, setOpen] = useState(false);
-
-  const [index, setIndex] = useState(0);
-
-  const [tables, setTable] = useState<Table[]>([]);
-
-  const { width } = Dimensions.get("window");
-
-  const handleClose = () => {
-    setOpen(false);
-    setIndex(0);
-  };
-
-  const handleOpen = (id: number) => {
-    setOpen(true);
-    setIndex(id);
-  };
-
-  useEffect(() => {
-    const fetchTables = async () => {
-      try {
-        const tableCollection = collection(myCafe, "Table");
-        const tableSnapshot = await getDocs(tableCollection);
-
-        const tableList: Table[] = [];
-        tableSnapshot.forEach((doc) => {
-          const tableInfo = doc.data();
-          const table = new Table(
-            doc.id,
-            tableInfo.isOccupied,
-            tableInfo.isReserved
-          );
-          tableList.push(table);
-        });
-        setTable(tableList);
-        // setLoading(false);
-      } catch (error) {
-        console.error("Error fetching cafes: ", error);
-        // setLoading(false);
-      }
-    };
-
-    fetchTables();
-  }, []);
-  return (
-    <SafeAreaView className="flex-1 items-center justify-center">
-      <StatusBar barStyle="dark-content" />
-      <View className="absolute right-5 top-5">
-        <Text className="font-bold"> 5/12 {"   "} (+3 reserved)</Text>
-        {/* Cafe density text */}
-      </View>
-      {/* Order pop-up section */}
-
-      <View className="grid grid-flow-row auto-rows-max bg-blue-500 w-[80%]">
-        <FlatList
-          className="flex-column bg-red-500 p-10 "
-          data={tables}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleOpen(0)}>
-              <View className="border-solid border w-[70px] h-[70px] rounded-[12px] ml-5 justify-center items-center bg-red-500">
-                <Text>
-                  Table {item.id} {item.isOccupied}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        ></FlatList>
-      </View>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={open}
-        onRequestClose={() => {
-          handleClose;
-        }}
-      >
-        <View className="items-center justify-center h-[50%] mt-[75%] border bg-blue-500 rounded-[50%] shadow-lg">
-          <Pressable onPress={handleClose}>
-            <View className="items-center">
-              <Text className="text-white text-lg">Orders</Text>
-              <View>
-                <Text>
-                  2 {"  "} Pizza {"     "} $20
-                </Text>
-              </View>
-            </View>
-          </Pressable>
-        </View>
-      </Modal>
     </SafeAreaView>
   );
 }

@@ -20,9 +20,11 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+export const myCafeId = "LPly9akk4dOVhpTjnFJe" ;
 export const db = getFirestore(app);
-export const caferef = collection(db,"cafes");
-export const myCafe = doc(caferef,"LPly9akk4dOVhpTjnFJe" ) ;
+export const cafeRef = collection(db,"cafes");
+export const commRef = collection(db,"comments");
+export const myCafe = doc(cafeRef,myCafeId ) ;
 
 //cafe eklenecek
 //database'den masalar ve reservasyonlar çekilecek.

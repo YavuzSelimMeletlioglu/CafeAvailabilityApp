@@ -1,9 +1,5 @@
-export const feedback = [
-    {
-        comment : "Place is awesome.",
-    },
-    {
-        comment : "Waiters was friendly",
-    },
-
-];
+export class Feedback {
+        username = "" ;
+        comment = "";
+    
+}
