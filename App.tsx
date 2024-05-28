@@ -17,7 +17,6 @@ import { menu } from "./data/MenuData";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StarRatingDisplay } from "react-native-star-rating-widget";
 import { feedback } from "./data/Feedbacks";
-import { tableInfo } from "./data/TableData";
 
 function CafeInfoScreen({ navigation }) {
   return (
@@ -25,7 +24,6 @@ function CafeInfoScreen({ navigation }) {
       <StatusBar barStyle="dark-content" />
 
       <View className="relative">
-        {" "}
         {/* Cafe Image */}
         <Image
           source={require("./assets/butik-cafe-dekorasyonu.jpg")}
@@ -38,7 +36,6 @@ function CafeInfoScreen({ navigation }) {
         <Text className="text-[30px] font-bold">Cafe Name</Text>
       </View>
       <View className="inset-y-0 left-0 items-center flex-row bg-blue-300 h-12 rounded-full shadow-xl">
-        {" "}
         {/* Menu button */}
         <TouchableOpacity
           onPress={() => navigation.navigate("Menu")}
@@ -55,7 +52,6 @@ function CafeInfoScreen({ navigation }) {
       </View>
 
       <View className="w-[90%] bg-red-300 rounded-full shadow-xl">
-        {" "}
         {/* Reservation Button */}
         <TouchableOpacity
           className="flex-row items-center mx-5 py-3 shadow-lg"
@@ -83,15 +79,14 @@ function CafeInfoScreen({ navigation }) {
 function MenuScreen() {
   return (
     <SafeAreaView>
-      <View className="absolute top-5 right-5 z-10">
-        {" "}
+      <View className="absolute top-8 right-5 z-10">
         {/* Add menu item button */}
         <TouchableOpacity>
           <View className=" rounded-[12px] border bg-green-500 w-[40px] h-[40px] items-center justify-center">
             <Icon.Plus width="25" height="25" stroke="gray" />
           </View>
         </TouchableOpacity>
-      </View>{" "}
+      </View>
       {/* Category Section Image Starting next row */}
       <FlatList
         data={menu}
@@ -104,7 +99,7 @@ function MenuScreen() {
                 <TouchableOpacity>
                   <View className="border rounded-full w-[100%] h-[40px] pl-2 pr-2 mt-6 space-x-6 items-center flex-row bg-blue-500">
                     <Text className="italic text-sm text-white">
-                      {item.foodName}{" "}
+                      {item.foodName}
                     </Text>
                     <Text className="italic text-sm text-white">
                       {item.ingredients}
@@ -170,11 +165,10 @@ function TableScreen() {
     <SafeAreaView className="flex-1 items-center justify-center">
       <StatusBar barStyle="dark-content" />
       <View className="absolute right-5 top-5">
-        <Text className="font-bold">5/12 {"   "} (+3 reserved)</Text>{" "}
+        <Text className="font-bold">5/12 {"   "} (+3 reserved)</Text>
         {/* Cafe density text */}
       </View>
       <View className="flex-row m-10">
-        {" "}
         {/* Table Section  */}
         <View className="border-solid border w-[70px] h-[70px] rounded-[12px] justify-center items-center bg-orange-500">
           <Text>Table 1</Text>
@@ -220,7 +214,7 @@ function TableScreen() {
         <View className=" border w-[70px] h-[70px] rounded-[12px] ml-5 justify-center items-center bg-orange-500">
           <Text>Table 12</Text>
         </View>
-      </View>{" "}
+      </View>
       {/* Order pop-up section */}
       <Modal
         animationType="slide"
