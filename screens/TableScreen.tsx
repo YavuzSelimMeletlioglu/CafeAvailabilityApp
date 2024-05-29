@@ -10,8 +10,8 @@ import {
   Dimensions,
   SafeAreaView,
 } from "react-native";
-import { collection, getDocs, doc } from "firebase/firestore";
-import { myCafe } from "../firebase";
+import { collection, getDocs, doc, setDoc } from "firebase/firestore";
+import { myCafe, table } from "../firebase";
 import { Table } from "../data/TableData";
 
 const { width } = Dimensions.get("window");
@@ -20,7 +20,15 @@ interface State {
   tables: Table[];
   loading: boolean;
   open: boolean;
+  selectedTable: Table | null;
+  menu: MenuItem[];
+  selectedOrder: MenuItem | null;
 }
+
+type MenuItem = {
+  name: string;
+  price: number;
+};
 
 class TableScreen extends Component<{}, State> {
   constructor(props) {
@@ -29,11 +37,15 @@ class TableScreen extends Component<{}, State> {
       tables: [],
       loading: true,
       open: false,
+      selectedTable: null,
+      menu: [],
+      selectedOrder: null,
     };
   }
 
   componentDidMount() {
     this.fetchTables();
+    this.fetchMenu();
   }
 
   fetchTables = async () => {
@@ -60,18 +72,106 @@ class TableScreen extends Component<{}, State> {
     }
   };
 
-  handleOpen = () => {
-    this.setState({ open: true });
+  fetchMenu = async () => {
+    try {
+      const menuCollection = collection(myCafe, "Menu");
+      const menuSnapshot = await getDocs(menuCollection);
+
+      const menuData: MenuItem[] = menuSnapshot.docs.map((doc) => ({
+        name: doc.data().name,
+        price: doc.data().price,
+      }));
+
+      this.setState({ menu: menuData });
+    } catch (error) {
+      console.error("Error fetching menu: ", error);
+    }
+  };
+
+  setOccupied = async (tableId: string) => {
+    try {
+      const tableRef = doc(myCafe, "Table", tableId.toString());
+      await setDoc(tableRef, { isOccupied: true });
+
+      this.setState((prevState) => ({
+        tables: prevState.tables.map((table) =>
+          table.id === tableId ? { ...table, isOccupied: true } : table
+        ),
+      }));
+    } catch (error) {
+      console.error("Error setting table as occupied: ", error);
+    }
+  };
+
+  setReserved = async (tableId: string) => {
+    try {
+      const tableRef = doc(myCafe, "Table", tableId.toString());
+      await setDoc(tableRef, { isReserved: true });
+
+      this.setState((prevState) => ({
+        tables: prevState.tables.map((table) =>
+          table.id === tableId ? { ...table, isReserved: true } : table
+        ),
+      }));
+    } catch (error) {
+      console.error("Error setting table as occupied: ", error);
+    }
+  };
+
+  setEmpty = async (tableId: string) => {
+    try {
+      const tableRef = doc(myCafe, "Table", tableId.toString());
+      await setDoc(tableRef, { isOccupied: false, isReserved: false });
+
+      this.setState((prevState) => ({
+        tables: prevState.tables.map((table) =>
+          table.id === tableId
+            ? { ...table, isOccupied: false, isReserved: false }
+            : table
+        ),
+      }));
+    } catch (error) {
+      console.error("Error setting table as occupied: ", error);
+    }
+  };
+
+  handleOpen = (id: Table) => {
+    this.setState({ open: true, selectedTable: id });
   };
 
   handleClose = () => {
     this.setState({ open: false });
   };
 
+  renderMenu = () => {
+    const { menu } = this.state;
+    return (
+      <View>
+        <Text style={{ color: "white", fontSize: 18, marginBottom: 10 }}>
+          Menu:
+        </Text>
+        {menu.map((item, index) => (
+          <Pressable
+            key={index}
+            style={{
+              backgroundColor: "grey",
+              padding: 10,
+              marginBottom: 10,
+              borderRadius: 5,
+            }}
+            onPress={() => this.setState({ selectedOrder: item })}
+          >
+            <Text style={{ color: "white", fontSize: 16 }}>{item.name}</Text>
+          </Pressable>
+        ))}
+      </View>
+    );
+  };
+
   renderRow = ({ item }) => (
     <View style={styles.rowContainer}>
       {item.map((table, index) => (
-        <TouchableOpacity key={index} onPress={this.handleOpen}>
+        <TouchableOpacity key={index} onPress={() => this.handleOpen(table)}>
           <View style={[styles.tableItem, this.getTableItemStyle(table)]}>
             <Text style={styles.tableText}>
               Table {table.id}{" "}
@@ -97,7 +197,7 @@ class TableScreen extends Component<{}, State> {
   };
 
   render() {
-    const { tables, loading, open } = this.state;
+    const { tables, loading, open, selectedTable, selectedOrder } = this.state;
 
     if (loading) {
       return <Text>Loading...</Text>;
@@ -113,26 +213,87 @@ class TableScreen extends Component<{}, State> {
           keyExtractor={(item, index) => index.toString()}
         />
 
-        {/* Modal for displaying orders */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={open}
-          onRequestClose={this.handleClose} // Use the handleClose function directly
-        >
-          <View style={styles.modalContainer}>
-            <Pressable onPress={this.handleClose}>
-              <View style={styles.modalContent}>
-                <Text style={styles.modalTitle}>Orders</Text>
-                <View>
-                  <Text>
-                    2 {"  "} Pizza {"     "} $20
-                  </Text>
-                </View>
+        {open && selectedTable && (
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={open}
+            onRequestClose={this.handleClose}
+          >
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "rgba(0,0,0,0.5)",
+              }}
+            >
+              <View
+                style={{
+                  width: "80%",
+                  padding: 20,
+                  backgroundColor: "blue",
+                  borderRadius: 10,
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ color: "white", fontSize: 18 }}>
+                  Table {selectedTable.id}
+                </Text>
+                <Text style={{ color: "white", fontSize: 16 }}>
+                  Occupied: {selectedTable.isOccupied ? "Yes" : "No"}
+                </Text>
+                <Text style={{ color: "white", fontSize: 16 }}>
+                  Reserved: {selectedTable.isReserved ? "Yes" : "No"}
+                </Text>
+                <Pressable
+                  onPress={() => this.setOccupied(selectedTable.id)}
+                  style={{
+                    marginTop: 20,
+                    padding: 10,
+                    backgroundColor: "red",
+                    borderRadius: 5,
+                  }}
+                >
+                  <Text style={{ color: "white" }}>Set as Occupied</Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => this.setEmpty(selectedTable.id)}
+                  style={{
+                    marginTop: 20,
+                    padding: 10,
+                    backgroundColor: "red",
+                    borderRadius: 5,
+                  }}
+                >
+                  <Text style={{ color: "white" }}>Set as Empty</Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => this.setReserved(selectedTable.id)}
+                  style={{
+                    marginTop: 20,
+                    padding: 10,
+                    backgroundColor: "red",
+                    borderRadius: 5,
+                  }}
+                >
+                  <Text style={{ color: "white" }}>Set as Reserved</Text>
+                </Pressable>
+                <Pressable
+                  onPress={this.handleClose}
+                  style={{
+                    marginTop: 10,
+                    padding: 10,
+                    backgroundColor: "grey",
+                    borderRadius: 5,
+                  }}
+                >
+                  <Text style={{ color: "white" }}>Close</Text>
+                </Pressable>
               </View>
-            </Pressable>
-          </View>
-        </Modal>
+            </View>
+          </Modal>
+        )}
       </SafeAreaView>
     );
   }

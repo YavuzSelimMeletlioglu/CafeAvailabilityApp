@@ -23,6 +23,7 @@ import TableScreen from "./screens/TableScreen";
 import { MenuScreen } from "./screens/MenuScreen";
 import { CommentScreen } from "./screens/CommentScreen";
 import { ReservationScreen } from "./screens/ReservationScreen";
+import { MenuItemScreen } from "./screens/UpdateMenuItem";
 
 const cafeId = "LPly9akk4dOVhpTjnFJe";
 
@@ -207,6 +208,7 @@ function App() {
         <Stack.Screen name="Table Screen" component={MainScreenTabs} />
         <Stack.Screen name="Reservation" component={ReservationScreen} />
         <Stack.Screen name="Menu" component={MenuScreen} />
+        <Stack.Screen name="MenuItem" component={MenuItemScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

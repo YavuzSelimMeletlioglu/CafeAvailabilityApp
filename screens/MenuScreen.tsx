@@ -1,9 +1,10 @@
 import { collection, getDocs } from "firebase/firestore";
-import { Component } from "react";
+import { Component, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -16,8 +17,12 @@ interface State {
   loading: boolean;
 }
 
-export class MenuScreen extends Component<{}, State> {
-  constructor(props) {
+type Props = {
+  navigation: any;
+};
+
+export class MenuScreen extends Component<Props, State> {
+  constructor(props: Props) {
     super(props),
       (this.state = {
         menu: [],
@@ -65,14 +70,6 @@ export class MenuScreen extends Component<{}, State> {
     const { menu, loading } = this.state;
     return (
       <SafeAreaView>
-        <View className="absolute top-8 right-5 z-10">
-          {/* Add menu item button */}
-          <TouchableOpacity>
-            <View className=" rounded-[12px] border bg-green-500 w-[40px] h-[40px] items-center justify-center">
-              <Icon.Plus width="25" height="25" stroke="gray" />
-            </View>
-          </TouchableOpacity>
-        </View>
         {/* Category Section Image Starting next row */}
         <FlatList
           data={menu}

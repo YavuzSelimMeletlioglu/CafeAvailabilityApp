@@ -26,5 +26,7 @@ export const cafeRef = collection(db,"cafes");
 export const commRef = collection(db,"comments");
 export const myCafe = doc(cafeRef,myCafeId ) ;
 
+
+
 //cafe eklenecek
 //database'den masalar ve reservasyonlar çekilecek.
