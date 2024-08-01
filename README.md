@@ -1,0 +1,1 @@
+It is an app that let you observe the availability of the cafes/restaurants. You can book a table or give an order. Check the available table and make yourself comfortable before look around for emtpy tables.
